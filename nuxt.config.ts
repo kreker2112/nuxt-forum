@@ -3,10 +3,6 @@ import { resolve } from "path";
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  alias: {
-    "@": resolve(__dirname, "./"),
-    assets: "/<rootDir>/assets",
-  },
   app: {
     rootId: "KreKer2112",
     head: {

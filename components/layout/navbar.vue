@@ -123,10 +123,6 @@
 </template>
 
 <script setup lang="ts">
-// interface Theme {
-//   preference: string;
-// }
-
 import { useState } from "#app";
 
 const user = useState("user");
