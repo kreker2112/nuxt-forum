@@ -2,7 +2,7 @@ import { sendError, H3Event } from "h3";
 import bcrypt from "bcrypt";
 
 import { validateUser } from "~/server/services/userService";
-import { createUser } from "../database/repositories/userRepository";
+import { createUser } from "../../database/repositories/userRepository";
 import { makeSession } from "~~/server/services/sessionService";
 
 export default async (event: any) => {

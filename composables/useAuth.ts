@@ -30,7 +30,7 @@ export async function registerWithEmail(
   password: string
 ): Promise<FormValidation> {
   try {
-    const { data, error } = await useFetch<ISession>("/api/register", {
+    const { data, error } = await useFetch<ISession>("/api/auth/register", {
       method: "POST",
       body: { data: { username, name, email, password } },
     });

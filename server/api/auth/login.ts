@@ -1,6 +1,6 @@
 import { sanitizeUserForFrontend } from "~~/server/services/userService";
 import bcrypt from "bcrypt";
-import { getUserByEmail } from "../database/repositories/userRepository";
+import { getUserByEmail } from "../../database/repositories/userRepository";
 import { makeSession } from "~~/server/services/sessionService";
 
 export default async (event: any) => {
