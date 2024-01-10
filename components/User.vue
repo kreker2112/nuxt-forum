@@ -44,10 +44,6 @@
 </template>
 
 <script setup lang="ts">
-// import { IUser } from "~/types/IUser";
-// import { ref } from "@vue/reactivity";
-// import { userLogout } from "~/composables/useAuth";
-// import { useState } from "#app";
 import { onClickOutside } from "@vueuse/core";
 
 const avatar = (given: string | undefined) => given ?? "/img/logo_short.png"; //

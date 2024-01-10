@@ -28,6 +28,13 @@
             </svg>
           </button>
         </div>
+        <nuxt-link to="/">
+          <span class="sr-only">Workflow</span>
+          <img
+            class="h-24 w-auto transition duration-500 scale-50 hover:scale-110"
+            src="/img/logo_clear_fsj.png"
+          />
+        </nuxt-link>
         <nav class="hidden md:flex space-x-10">
           <nuxt-link to="/subscribe">
             <span
@@ -73,7 +80,9 @@
           >
             Sign in
           </nuxt-link>
+
           <User v-if="user" :user="user" />
+
           <nuxt-link
             v-if="!user"
             to="/register"
@@ -81,9 +90,10 @@
           >
             Sign up
           </nuxt-link>
+
           <!-- <a class="ml-5" href="https://github.com/jurassicjs/nuxt3-laravel-dev" target="_blank">
-              <img class="h-8 w-auto sm:h-10" src="~/public/img/github-logo.png" />
-            </a> -->
+            <img class="h-8 w-auto sm:h-10" src="~/public/img/github-logo.png" />
+          </a> -->
         </div>
         <button
           class="hidden md:block"

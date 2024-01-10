@@ -1,4 +1,4 @@
-import prisma from "../../database/client";
+import prisma from "@/server/database/client";
 
 export async function getUserByEmail(email: string): Promise<IUser> {
   return (await prisma.user.findUnique({
@@ -9,7 +9,7 @@ export async function getUserByEmail(email: string): Promise<IUser> {
       id: true,
       username: true,
     },
-  })) as unknown as IUser;
+  })) as IUser;
 }
 
 export async function getUserByUserName(username: string): Promise<IUser> {
@@ -21,7 +21,7 @@ export async function getUserByUserName(username: string): Promise<IUser> {
       id: true,
       username: true,
     },
-  })) as unknown as IUser;
+  })) as IUser;
 }
 
 export async function createUser(data: IUser) {

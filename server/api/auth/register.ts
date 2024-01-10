@@ -1,11 +1,11 @@
-import { sendError, H3Event } from "h3";
+import { H3Event } from "h3";
 import bcrypt from "bcrypt";
 
-import { validateUser } from "~/server/services/userService";
-import { createUser } from "../../database/repositories/userRepository";
-import { makeSession } from "~~/server/services/sessionService";
+import { validateUser } from "@/server/services/userService";
+import { createUser } from "@/server/database/repositories/userRepository";
+import { makeSession } from "@/server/services/sessionService";
 
-export default async (event: any) => {
+export default eventHandler(async (event: H3Event) => {
   const body = await readBody(event);
   const data = body.data as RegistrationRequest;
 
@@ -42,4 +42,4 @@ export default async (event: any) => {
   const user = await createUser(userData);
 
   return await makeSession(user, event);
-};
+});

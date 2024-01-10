@@ -142,7 +142,7 @@
 
 <script setup lang="ts">
 import { ref } from "@vue/reactivity";
-import { loginWithEmail } from "~/composables/useAuth";
+import { loginWithEmail } from "@/composables/useAuth";
 
 const email = ref("");
 const password = ref("");

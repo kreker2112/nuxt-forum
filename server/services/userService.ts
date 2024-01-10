@@ -1,6 +1,4 @@
-// import { IUser } from '~~/types/IUser';
-// import { RegistationRequest } from '~~/types/IRegistration';
-import { validate } from "~~/server/services/validator";
+import { validate } from "@/server/services/validator";
 
 export async function validateUser(
   data: RegistrationRequest

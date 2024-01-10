@@ -1,6 +1,4 @@
-// import { IUser } from '~/types/IUser';
-import prisma from "~/server/database/client";
-// import { ISession } from '~~/types/ISession';
+import prisma from "@/server/database/client";
 
 export async function createSession(data: ISession): Promise<ISession> {
   if (data.userId === undefined) {

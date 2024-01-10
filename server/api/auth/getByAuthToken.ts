@@ -1,4 +1,4 @@
-import { getUserBySessionToken } from "~~/server/services/sessionService";
+import { getUserBySessionToken } from "@/server/services/sessionService";
 
 export default defineEventHandler(async (event) => {
   const authToken = getCookie(event, "auth_token");

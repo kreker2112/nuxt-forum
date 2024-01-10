@@ -1,8 +1,7 @@
-// import { RegistationRequest } from "~~/types/IRegistration";
 import {
   getUserByEmail,
   getUserByUserName,
-} from "../database/repositories/userRepository";
+} from "@/server/database/repositories/userRepository";
 
 export async function validate(data: RegistrationRequest) {
   const errors = new Map<string, { check: InputValidation }>();
