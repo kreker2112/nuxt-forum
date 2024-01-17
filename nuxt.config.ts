@@ -33,4 +33,12 @@ export default defineNuxtConfig({
     typeCheck: true,
   },
   extensions: [".ts", ".js", ".vue", ".json", ".graphql", ".gql"],
+  runtimeConfig: {
+    private: {
+      stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    },
+    public: {
+      appDomain: process.env.APP_DOMAIN,
+    },
+  },
 });

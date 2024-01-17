@@ -1,3 +1,3 @@
-export default async (event: any) => {
+export default eventHandler(async (event: any) => {
   setCookie(event, "auth_token", "");
-};
+});

@@ -33,7 +33,10 @@
         >
           <strong class="font-bold">Oops, try again! </strong>
           <span class="block sm:inline">{{ errorMessage }}</span>
-          <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+          <span
+            class="absolute top-0 bottom-0 right-0 px-4 py-3"
+            @click="closeErrorMessage"
+          >
             <svg
               class="fill-current h-6 w-6 text-red-500"
               xmlns="http://www.w3.org/2000/svg"
@@ -146,15 +149,25 @@ import { loginWithEmail } from "@/composables/useAuth";
 
 const email = ref("");
 const password = ref("");
-const hasError = ref(null);
-const errorMessage = ref(null);
+const hasError = ref(false);
+const errorMessage = ref("");
 
 definePageMeta({
   middleware: "guest",
 });
 
 const postLoginForm = async function () {
-  await loginWithEmail(email.value, password.value);
+  try {
+    await loginWithEmail(email.value, password.value);
+    hasError.value = false; // Сброс состояния ошибки при успешном входе
+  } catch (error) {
+    hasError.value = true; // Установка состояния ошибки
+    errorMessage.value = "User does not exist or password is incorrect"; // Установка сообщения об ошибке
+  }
+};
+
+const closeErrorMessage = () => {
+  hasError.value = false;
 };
 </script>
 

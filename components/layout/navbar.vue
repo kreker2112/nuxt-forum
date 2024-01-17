@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar relative dark:bg-slate-800">
+  <div v-if="isClient" class="navbar relative dark:bg-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <div
         class="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10"
@@ -133,12 +133,20 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import { useState } from "#app";
 
+// Флаг, который будет true только на клиенте
+const isClient = ref(false);
+
+onMounted(() => {
+  isClient.value = true;
+});
+
 const user = useState("user");
-const colorMode = useColorMode();
+
 const setColorTheme = (newTheme: Theme) => {
-  colorMode.preference = newTheme;
+  useColorMode().preference = newTheme;
 };
 </script>
 
