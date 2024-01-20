@@ -1,4 +1,8 @@
-// import { updateStripeCustomerId } from "@/server/database/repositories/userRepository";
+import {
+  getUserByStripeCustomerId,
+  getSubscriptionById,
+  createOrUpdateSubscription,
+} from "@/server/database/repositories/userRepository";
 
 import Stripe from "stripe";
 
@@ -36,4 +40,36 @@ export async function getSubscribeUrl(
   });
 
   return { url: session.url, user, shouldUpdateUser } as SubPostRes;
+}
+
+export async function handleSubscriptionChange(
+  subscription: Stripe.Subscription,
+  lastEventDate: number
+): Promise<boolean> {
+  const localSubscription = await getSubscriptionById(subscription.id);
+
+  if (localSubscription?.lastEventDate > lastEventDate) {
+    return true;
+  }
+
+  const stripeCustomerId = subscription.customer as string;
+
+  const user = await getUserByStripeCustomerId(stripeCustomerId);
+
+  const data = {
+    userId: user.id,
+    name: subscription.id,
+    stripeId: subscription.id,
+    stripeStatus: subscription.status,
+    stripePriceId: subscription.items.data[0].price.id,
+    quantity: subscription.description,
+    trialEndsAt: subscription.trial_end,
+    endsAt: subscription.ended_at,
+    startDate: subscription.start_date,
+    lastEventDate: lastEventDate,
+  } as unknown as ISubscription;
+
+  await createOrUpdateSubscription(data);
+
+  return true;
 }

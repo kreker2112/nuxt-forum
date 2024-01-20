@@ -486,6 +486,30 @@
     "@netlify/node-cookies" "^0.1.0"
     urlpattern-polyfill "8.0.2"
 
+"@ngrok/ngrok-win32-x64-msvc@0.9.1":
+  version "0.9.1"
+  resolved "https://registry.npmjs.org/@ngrok/ngrok-win32-x64-msvc/-/ngrok-win32-x64-msvc-0.9.1.tgz"
+  integrity sha512-98Qum+DOIr50FM9A+BrwHPNbcpk0S23uSPlzNTvARybUFYgp6UxVCvZ6P/anZNVDSS+F+mHoIokS5X3Liwka4Q==
+
+"@ngrok/ngrok@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.npmjs.org/@ngrok/ngrok/-/ngrok-0.9.1.tgz"
+  integrity sha512-G9C+ih9aiaQ2MGia2TEpxObQiJAyZXETD9FgwDqUuAk6Hq0Unby7XogdAH2H6hWkTBCkEYdTtA6397Bd2Vr2dQ==
+  optionalDependencies:
+    "@ngrok/ngrok-android-arm-eabi" "0.9.1"
+    "@ngrok/ngrok-android-arm64" "0.9.1"
+    "@ngrok/ngrok-darwin-arm64" "0.9.1"
+    "@ngrok/ngrok-darwin-universal" "0.9.1"
+    "@ngrok/ngrok-darwin-x64" "0.9.1"
+    "@ngrok/ngrok-freebsd-x64" "0.9.1"
+    "@ngrok/ngrok-linux-arm-gnueabihf" "0.9.1"
+    "@ngrok/ngrok-linux-arm64-gnu" "0.9.1"
+    "@ngrok/ngrok-linux-arm64-musl" "0.9.1"
+    "@ngrok/ngrok-linux-x64-gnu" "0.9.1"
+    "@ngrok/ngrok-linux-x64-musl" "0.9.1"
+    "@ngrok/ngrok-win32-ia32-msvc" "0.9.1"
+    "@ngrok/ngrok-win32-x64-msvc" "0.9.1"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"
@@ -833,10 +857,10 @@
   resolved "https://registry.npmjs.org/@polka/url/-/url-1.0.0-next.24.tgz"
   integrity sha512-2LuNTFBIO0m7kKIQvvPHN6UE63VjpmL9rnEEaOOaiSPbZK+zUOYIzBAWcED+3XYzhYsd/0mD57VdxAEqqV52CQ==
 
-"@prisma/client@^5.7.1":
-  version "5.7.1"
-  resolved "https://registry.npmjs.org/@prisma/client/-/client-5.7.1.tgz"
-  integrity sha512-TUSa4nUcC4nf/e7X3jyO1pEd6XcI/TLRCA0KjkA46RDIpxUaRsBYEOqITwXRW2c0bMFyKcCRXrH4f7h4q9oOlg==
+"@prisma/client@^5.8.1":
+  version "5.8.1"
+  resolved "https://registry.npmjs.org/@prisma/client/-/client-5.8.1.tgz"
+  integrity sha512-xQtMPfbIwLlbm0VVIVQY2yqQVOxPwRQhvIp7Z3m2900g1bu/zRHKhYZJQWELqmjl6d8YwBy0K2NvMqh47v1ubw==
 
 "@prisma/debug@5.7.1":
   version "5.7.1"
