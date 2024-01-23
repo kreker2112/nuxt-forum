@@ -52,7 +52,7 @@
                   @click="deleteQuestion"
                   class="bg-red-500 ml-3 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
                 >
-                  delete
+                  Delete
                 </button>
               </div>
 
@@ -126,7 +126,7 @@ async function deleteQuestion() {
   showDeleted.value = true;
   setTimeout(() => {
     router.push("/ask-jack/search");
-  });
+  }, 1500);
 }
 
 const editEndpoint = "/api/ask-jack/edit-question";
