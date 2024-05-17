@@ -1,16 +1,13 @@
-/** @type {import('tailwindcss').Config} */
+import colors from "tailwindcss/colors";
+
 export default {
-  content: [
-    "./components/**/*.{js,vue,ts}",
-    "./layouts/**/*.vue",
-    "./pages/**/*.vue",
-    "./plugins/**/*.{js,ts}",
-    "./app.vue",
-    "./error.vue",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
   darkMode: "class",
+  plugins: [require("@tailwindcss/typography")],
+  theme: {
+    extend: {
+      colors: {
+        primary: colors.gray,
+      },
+    },
+  },
 };

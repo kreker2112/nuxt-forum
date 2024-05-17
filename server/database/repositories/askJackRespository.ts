@@ -31,13 +31,23 @@ export async function createAnswer(data: IAnswerPost, authorId: number) {
   });
 }
 
-export async function searchQuestions(query: string): Promise<IQuestion[]> {
-  const result = await prisma.$queryRawUnsafe(
-    `SELECT * FROM Question where title like $1 or description like $1`,
-    `%${query}%`
-  );
-
-  return result as IQuestion[];
+export async function searchQuestions(query: string) {
+  return await prisma.question.findMany({
+    where: {
+      OR: [
+        {
+          title: {
+            contains: query,
+          },
+        },
+        {
+          description: {
+            contains: query,
+          },
+        },
+      ],
+    },
+  });
 }
 
 export async function editQuestion(question: IQuestionPost) {

@@ -1,14 +1,31 @@
-import { H3Event } from "h3";
-import { createQuestion } from "@/server/database/repositories/askJackRespository";
-import { getUserBySessionToken } from "@/server/services/sessionService";
+import { getCookie, readBody } from "h3";
+import { createQuestion } from "~/server/database/repositories/askJackRespository";
+import { getUserBySessionToken } from "~/server/services/sessionService";
+import sendDefaultErrorResponse from "~~/server/app/errors/responses/DefaultErrorsResponse";
 
-export default defineEventHandler(async (event: H3Event) => {
+export default eventHandler(async (event) => {
+  //todo: add validation
   const body = await readBody(event);
+  const authToken = getCookie(event, "auth_token");
 
-  const authToken = getCookie(event, "auth_token") as string;
+  if (!authToken) {
+    return await sendDefaultErrorResponse(
+      event,
+      "Unauthorized",
+      403,
+      "You must be logged in to ask a question"
+    );
+  }
+
   const user = await getUserBySessionToken(authToken);
+
   if (!user) {
-    throw new Error("User not found");
+    return await sendDefaultErrorResponse(
+      event,
+      "Unauthorized",
+      403,
+      "You must be logged in to ask a question"
+    );
   }
 
   const data: IQuestionPost = body.data;

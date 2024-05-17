@@ -1,14 +1,15 @@
-import { sanitizeUserForFrontend } from "@/server/services/userService";
+import { sanitizeUserForFrontend } from "~~/server/services/userService";
+import { H3Event } from "h3";
 import {
   createSession,
   getSessionByAuthToken,
-} from "@/server/database/repositories/sessionRepository";
+} from "~~/server/database/repositories/sessionRepository";
 import { v4 as uuidv4 } from "uuid";
-import type { User } from "@prisma/client";
+import { User } from "@prisma/client";
 
 export async function makeSession(
   user: User,
-  event: any
+  event: H3Event
 ): Promise<User | undefined> {
   const authToken = uuidv4().replaceAll("-", "");
   const session = await createSession({ authToken, userId: user.id });
@@ -27,5 +28,5 @@ export async function getUserBySessionToken(
 ): Promise<User | undefined> {
   const session = await getSessionByAuthToken(authToken);
 
-  return sanitizeUserForFrontend(session.user) as User;
+  return sanitizeUserForFrontend(session.user);
 }

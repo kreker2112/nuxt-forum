@@ -1,3 +1,6 @@
-export default eventHandler(async (event: any) => {
-  setCookie(event, "auth_token", "");
+import { deleteCookie } from "h3";
+
+export default eventHandler((event) => {
+  deleteCookie(event, "auth_token");
+  return "successfully logged out";
 });

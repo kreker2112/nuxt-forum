@@ -1,23 +1,32 @@
-import { defineEventHandler, sendError } from "h3";
-import { findQuestion } from "@/server/database/repositories/askJackRespository";
-import { getUserBySessionToken } from "@/server/services/sessionService";
-import { deleteQuestion } from "@/server/database/repositories/askJackRespository";
+import { defineEventHandler, getCookie, sendError } from "h3";
+import { findQuestion } from "~/server/database/repositories/askJackRespository";
+import { getUserBySessionToken } from "~/server/services/sessionService";
+import { deleteQuestion } from "~/server/database/repositories/askJackRespository";
+import sendDefaultErrorResponse from "~/server/app/errors/responses/DefaultErrorsResponse";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-
   const question = await findQuestion(parseInt(body.questionId));
-
   const authToken = getCookie(event, "auth_token");
 
-  if (!authToken) {
-    return new Response("Unauthorized", { status: 401 });
+  //todo: replace everywere with middleware
+  if (authToken == null) {
+    return await sendDefaultErrorResponse(
+      event,
+      "Unauthorized",
+      403,
+      "You must be logged in to answer a question"
+    );
   }
-
   const user = await getUserBySessionToken(authToken);
 
   if (!user) {
-    return new Response("Unauthorized", { status: 401 });
+    return await sendDefaultErrorResponse(
+      event,
+      "Unauthorized",
+      403,
+      "You must be logged in to answer a question"
+    );
   }
 
   const isMine = user.id == question.authorId;

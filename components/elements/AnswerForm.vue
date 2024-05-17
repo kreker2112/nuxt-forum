@@ -35,7 +35,9 @@
 
 <script setup lang="ts">
 const props = defineProps(["questionId"]);
-const emit = defineEmits<{ (e: "addAnswer", answer: IAnswer): void }>();
+
+const addAnswer = "addAnswer";
+const emit = defineEmits<{ (e: typeof addAnswer, answer: IAnswer): void }>();
 
 const questionId = props.questionId;
 
@@ -47,17 +49,18 @@ const data: IAnswerPost = reactive({
 const showAnswerForm = useState("showAnswerForm" + questionId);
 
 async function postAnswer() {
-  const answer = await useFetch(() => `/api/ask-jack/answer`, {
+  const answer: IAnswer = await $fetch<IAnswer>(`/api/ask-jack/answer`, {
     method: "post",
     body: { data },
   });
 
   const newAnswer = useState("newAnswer");
-  newAnswer.value = answer.data.value;
+  newAnswer.value = answer;
 
-  emit("addAnswer", newAnswer.value as IAnswer);
+  emit("addAnswer", answer);
 
   data.text = "";
+  console.log("&&&&&&&&&  end post answer");
 }
 </script>
 

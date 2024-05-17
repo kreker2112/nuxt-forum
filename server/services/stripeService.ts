@@ -1,13 +1,12 @@
 import {
-  getUserByStripeCustomerId,
-  getSubscriptionById,
   createOrUpdateSubscription,
-} from "@/server/database/repositories/userRepository";
-
+  getSubscriptionById,
+  getUserByStripeCustomerId,
+} from "../database/repositories/userRepository";
 import Stripe from "stripe";
 
 const config = useRuntimeConfig();
-const stripe = new Stripe(config.private.stripeSecretKey, undefined);
+const stripe = new Stripe(config.private.stripeSecretKey);
 
 export async function getSubscribeUrl(
   lookupKey: string,
@@ -39,7 +38,11 @@ export async function getSubscribeUrl(
     customer: user.stripeCustomerId,
   });
 
-  return { url: session.url, user, shouldUpdateUser } as SubPostRes;
+  return {
+    url: session.url ?? "https://github.com/kreker2112",
+    user,
+    shouldUpdateUser,
+  };
 }
 
 export async function handleSubscriptionChange(
@@ -48,13 +51,20 @@ export async function handleSubscriptionChange(
 ): Promise<boolean> {
   const localSubscription = await getSubscriptionById(subscription.id);
 
-  if (localSubscription?.lastEventDate > lastEventDate) {
+  if (
+    localSubscription?.lastEventDate &&
+    localSubscription.lastEventDate > lastEventDate
+  ) {
     return true;
   }
 
   const stripeCustomerId = subscription.customer as string;
 
   const user = await getUserByStripeCustomerId(stripeCustomerId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   const data = {
     userId: user.id,

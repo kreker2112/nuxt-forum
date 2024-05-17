@@ -68,7 +68,8 @@ const {
   refresh,
   error,
 } = await useFetch<IQuestion[]>(
-  () => `/api/ask-jack/search?search=${searchInput.value}`
+  () => `/api/ask-jack/search?search=${searchInput.value}`,
+  { server: false }
 );
 
 refresh();

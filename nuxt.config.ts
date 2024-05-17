@@ -1,44 +1,51 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 import { resolve } from "path";
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
   alias: {
     "@": resolve(__dirname, "./"),
   },
-  app: {
-    rootId: "KreKer2112",
-    head: {
-      title: "My nuxt fullstack tutorial",
-      meta: [
-        {
-          name: "description",
-          content: "Nuxt3 + TailwindCSS + TypeScript + Pinia",
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/color-mode",
+    [
+      "@nuxt/content",
+      {
+        highlight: {
+          theme: "github-dark",
+          preload: ["vue"],
         },
-      ],
-    },
-  },
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/color-mode"],
-  css: ["~/assets/styles/main.scss"],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
+        navigation: {
+          fields: ["author", "subject", "position"],
+        },
+      },
+    ],
+    "nuxt-icon",
+    "@nuxt/test-utils/module",
+  ],
+  tailwindcss: {
+    cssPath: "~/assets/css/tailwind.css",
+    configPath: "tailwind.config.js",
+    exposeConfig: false,
+    injectPosition: 0,
+    viewer: true,
   },
   colorMode: {
     classSuffix: "",
   },
-  typescript: {
-    typeCheck: true,
-  },
-  extensions: [".ts", ".js", ".vue", ".json", ".graphql", ".gql"],
   runtimeConfig: {
     private: {
       stripeSecretKey: process.env.STRIPE_SECRET_KEY,
-    },
+      db: process.env.DATABASE_URL,
+    } as any,
     public: {
       appDomain: process.env.APP_DOMAIN,
+      gitHash: process.env.GITHUB_SHA,
+      releaseVersion: process.env.RELEASE_VERSION,
     },
+  },
+  experimental: {
+    writeEarlyHints: false,
   },
 });

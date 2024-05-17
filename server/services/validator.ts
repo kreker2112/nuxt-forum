@@ -4,20 +4,23 @@ import {
 } from "@/server/database/repositories/userRepository";
 
 export async function validate(data: RegistrationRequest) {
-  const errors = new Map<string, { check: InputValidation }>();
+  const errors = new Map<string, { message: string | undefined }>();
 
   for (const [key, value] of Object.entries(data)) {
-    let val = await runChecks(key, value);
+    let val = await validateRegistration(key, value);
 
     if (val.hasError) {
-      errors.set(key, { check: val });
+      errors.set(key, { message: val.errorMessage });
     }
   }
 
   return errors;
 }
 
-async function runChecks(key: string, value: string): Promise<InputValidation> {
+async function validateRegistration(
+  key: string,
+  value: string
+): Promise<InputValidation> {
   const check: InputValidation = {
     value,
     isBlank: false,
@@ -25,13 +28,6 @@ async function runChecks(key: string, value: string): Promise<InputValidation> {
     key,
     hasError: false,
   };
-
-  if (value == "" || value == null) {
-    check.isBlank = true;
-    check.hasError = true;
-    check.errorMessage = `${key} is required`;
-    return check;
-  }
 
   if (key == "password") {
     if (value.length < 8) {
@@ -42,20 +38,11 @@ async function runChecks(key: string, value: string): Promise<InputValidation> {
   }
 
   if (key == "email") {
-    const isValidEmail = validateEmail(value);
-
-    if (!isValidEmail) {
-      check.emailTaken = true;
-      check.hasError = true;
-      check.errorMessage = `${value}, is not a valid email!`;
-      return check;
-    }
-
     const email = await getUserByEmail(value);
     if (email) {
       check.emailTaken = true;
       check.hasError = true;
-      check.errorMessage = `This email, ${value}, is already registered!`;
+      check.errorMessage = `Email is invalid or already taken`;
     }
   }
 
@@ -64,20 +51,9 @@ async function runChecks(key: string, value: string): Promise<InputValidation> {
     if (username) {
       check.usernameTaken = true;
       check.hasError = true;
-      check.errorMessage = `The username, ${value}, is already registered!`;
+      check.errorMessage = `Username is invalid or already taken`;
     }
   }
 
   return check;
-}
-
-function validateEmail(input: string): boolean {
-  const validRegex =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
-  if (!input.match(validRegex)) {
-    return false;
-  }
-
-  return true;
 }

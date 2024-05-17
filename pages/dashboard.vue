@@ -5,7 +5,7 @@
     <div
       class="mt-2 bg-white font-bold text-7xl py-1 px-8 rounded m-2 dark:bg-slate-700 dark:text-white"
     >
-      Welcome to the dashboard <span v-if="user.name"> {{ user.name }}</span>
+      Welcome to the dashboard <span v-if="user?.name"> {{ user.name }}</span>
     </div>
   </div>
 </template>
@@ -15,7 +15,7 @@ definePageMeta({
   middleware: "auth",
 });
 
-const user = await useUser();
+const user = (await useUser()) as IUser;
 </script>
 
 <style scoped lang="scss"></style>

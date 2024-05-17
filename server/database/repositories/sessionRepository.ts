@@ -1,13 +1,16 @@
-import prisma from "@/server/database/client";
+import prisma from "~/server/database/client";
 
-export async function createSession(data: ISession): Promise<ISession> {
-  if (data.userId === undefined) {
-    throw new Error("userId is undefined");
+import { User } from "@prisma/client";
+
+export async function createSession(sessionData: ISession): Promise<ISession> {
+  if (!sessionData.authToken || sessionData.userId === undefined) {
+    throw Error("missing auth token for session");
   }
+
   return await prisma.session.create({
     data: {
-      userId: data.userId,
-      authToken: data.authToken as string,
+      userId: sessionData.userId,
+      authToken: sessionData.authToken,
     },
   });
 }
@@ -15,17 +18,17 @@ export async function createSession(data: ISession): Promise<ISession> {
 export async function getSessionByAuthToken(
   authToken: string
 ): Promise<ISession> {
-  const user: IUser = (await getUserByAuthToken(authToken)) as unknown as IUser;
+  const user: User = (await getUserByAuthToken(authToken)) as unknown as User;
 
-  return { authToken, user };
+  return { authToken, user } as ISession;
 }
 
-async function getUserByAuthToken(authToken: string): Promise<IUser> {
+async function getUserByAuthToken(authToken: string): Promise<User | null> {
   return prisma.session
     .findUnique({
       where: {
         authToken: authToken,
       },
     })
-    .user() as unknown as IUser;
+    .user();
 }

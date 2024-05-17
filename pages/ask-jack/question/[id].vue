@@ -101,7 +101,7 @@ import getParam from "@/composables/getParam";
 
 const questionId = getParam("id");
 
-const me = await useUser();
+const me = (await useUser()) as IUser;
 
 const router = useRouter();
 

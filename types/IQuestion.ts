@@ -1,6 +1,6 @@
 type IQuestion = {
   id: number;
-  authorId: number;
+  authorId?: number;
   authName?: string;
   title: string;
   description: string;

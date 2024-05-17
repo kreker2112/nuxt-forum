@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="min-h-full theme-mode bg-gradient-to-b from-white to-indigo-200 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-600"
-  >
+  <div class="min-h-full theme-mode bg-white dark:bg-black">
     <div class="h-32 flex justify-center">
       <div class="flex m-5">
         <img
@@ -17,10 +15,10 @@
       </div>
     </div>
     <div class="md:flex">
-      <ElementsAskJackSidebar />
+      <AskJackSidebar />
       <div class="md:w-1/3 z-1 flex justify-right relative"></div>
       <div v-if="true" class="w-full md:w-1/3 h-screen">
-        <ElementsQuestionForm :data="data" :endpoint="endpoint" />
+        <QuestionForm :data="data" :endpoint="endpoint" />
       </div>
     </div>
   </div>

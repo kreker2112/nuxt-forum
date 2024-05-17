@@ -1,104 +1,60 @@
-import { sanitizeUserForFrontend } from "@/server/services/userService";
-import { H3Event } from "h3";
-
 import bcrypt from "bcrypt";
-import { getUserByEmail } from "@/server/database/repositories/userRepository";
-import { makeSession } from "@/server/services/sessionService";
+import { getUserByEmail } from "../../database/repositories/userRepository";
+import { sendError, H3Event } from "h3";
+import { ZodError } from "zod";
+import loginRequest from "~~/server/app/formRequests/LoginRequest";
+import sendDefaultErrorResponse from "~~/server/app/errors/responses/DefaultErrorsResponse";
+import { getMappedError } from "~~/server/app/errors/errorMapper";
+import { makeSession } from "~~/server/services/sessionService";
+import { sanitizeUserForFrontend } from "~~/server/services/userService";
+import sendZodErrorResponse from "~~/server/app/errors/responses/ZodErrorsResponse";
 
-// export default eventHandler(async (event: H3Event) => {
-//   const body = await readBody(event);
-//   const email: string = body.email;
-//   const password: string = body.password;
-//   const user: any = await getUserByEmail(email);
-
-//   if (user === null) {
-//     sendError(
-//       event,
-//       createError({ statusCode: 401, statusMessage: "Unauthenticated" })
-//     );
-//   }
-
-//   const isPasswordCorrect = bcrypt.compare(password, user.password as string);
-
-//   if (!isPasswordCorrect) {
-//     sendError(
-//       event,
-//       createError({ statusCode: 401, statusMessage: "Unauthenticated" })
-//     );
-//   }
-
-//   await makeSession(user, event);
-
-//   return sanitizeUserForFrontend(user);
-// });
-
-// export default eventHandler(async (event: H3Event) => {
-//   const body = await readBody(event);
-//   const email: string = body.email;
-//   const password: string = body.password;
-//   const user: any = await getUserByEmail(email);
-
-//   if (!user) {
-//     return sendError(
-//       event,
-//       createError({ statusCode: 401, statusMessage: "Unauthenticated" })
-//     );
-//   }
-
-//   const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
-//   if (!isPasswordCorrect) {
-//     return sendError(
-//       event,
-//       createError({ statusCode: 401, statusMessage: "Unauthenticated" })
-//     );
-//   }
-
-//   // Создание сессии теперь происходит только после успешной проверки пароля
-//   await makeSession(user, event);
-
-//   return sanitizeUserForFrontend(user);
-// });
+const standardAuthError = getMappedError(
+  "Authentication",
+  "Invalid Credentials"
+);
 
 export default eventHandler(async (event: H3Event) => {
-  const body = await readBody(event);
-  const email: string = body.email;
-  const password: string = body.password;
-
-  console.log("Email:", email); // Для отладки
-  console.log("Password:", password); // Для отладки
-
-  const user: any = await getUserByEmail(email);
-
-  if (!user || !user.password) {
-    console.log("Пользователь не найден или у пользователя нет пароля");
-    return sendError(
-      event,
-      createError({ statusCode: 401, statusMessage: "Unauthenticated" })
-    );
-  }
-
-  console.log("User found:", user); // Для отладки
-
   try {
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const data = (await loginRequest(event)) as {
+      usernameOrEmail: string;
+      password: string;
+    };
+    const user = await getUserByEmail(data.usernameOrEmail);
 
-    if (!isPasswordCorrect) {
-      console.log("Неверный пароль");
+    if (user === null) {
       return sendError(
         event,
-        createError({ statusCode: 401, statusMessage: "Unauthenticated" })
+        createError({ statusCode: 401, data: standardAuthError })
+      );
+    }
+
+    if (user.password == undefined) {
+      return sendError(
+        event,
+        createError({ statusCode: 401, data: standardAuthError })
+      );
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(
+      data.password,
+      user.password
+    );
+
+    if (!isPasswordCorrect) {
+      sendError(
+        event,
+        createError({ statusCode: 401, data: standardAuthError })
       );
     }
 
     await makeSession(user, event);
-
     return sanitizeUserForFrontend(user);
-  } catch (error) {
-    console.error("Ошибка при сравнении паролей:", error);
-    return sendError(
-      event,
-      createError({ statusCode: 500, statusMessage: "Internal Server Error" })
-    );
+  } catch (error: any) {
+    if (error.data instanceof ZodError) {
+      return await sendZodErrorResponse(event, error.data);
+    }
+
+    return await sendDefaultErrorResponse(event, "Unauthenticated", 401, error);
   }
 });

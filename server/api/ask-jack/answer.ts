@@ -1,20 +1,31 @@
-import { defineEventHandler } from "h3";
-import { createAnswer } from "@/server/database/repositories/askJackRespository";
-import { getUserBySessionToken } from "@/server/services/sessionService";
+import { readBody, getCookie } from "h3";
+import { createAnswer } from "~/server/database/repositories/askJackRespository";
+import { getUserBySessionToken } from "~/server/services/sessionService";
+import sendDefaultErrorResponse from "~/server/app/errors/responses/DefaultErrorsResponse";
 
-export default defineEventHandler(async (event) => {
+export default eventHandler(async (event) => {
   const body = await readBody(event);
   const data: IAnswerPost = body.data;
+  const authToken = getCookie(event, "auth_token") ?? null;
 
-  const authToken = getCookie(event, "auth_token");
-
-  if (!authToken) {
-    return new Response("Unauthorized", { status: 401 });
+  if (authToken == null) {
+    return await sendDefaultErrorResponse(
+      event,
+      "Unauthorized",
+      403,
+      "You must be logged in to answer a question"
+    );
   }
+
   const user = await getUserBySessionToken(authToken);
 
   if (!user) {
-    return new Response("Unauthorized", { status: 401 });
+    return await sendDefaultErrorResponse(
+      event,
+      "Unauthorized",
+      403,
+      "You must be logged in to answer a question"
+    );
   }
 
   return await createAnswer(data, user.id);

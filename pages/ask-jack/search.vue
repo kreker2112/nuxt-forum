@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="min-h-full theme-mode bg-gradient-to-b from-white to-indigo-200 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-600"
-  >
+  <div class="min-h-screen theme-mode bg-white dark:bg-black">
     <div class="h-32 flex justify-center">
       <div class="flex m-5">
         <img
@@ -17,17 +15,16 @@
       </div>
     </div>
     <div class="md:flex min-h-full">
-      <ElementsAskJackSidebar />
+      <AskJackSidebar />
       <div class="md:w-1/3 z-1 flex justify-right relative"></div>
-      <ElementsQuestionBoard />
+      <QuestionBoard />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-});
+import AskJackSidebar from "~/components/elements/AskJackSidebar.vue";
+import QuestionBoard from "~~/components/elements/QuestionBoard.vue";
 </script>
 
 <style scoped lang="scss"></style>

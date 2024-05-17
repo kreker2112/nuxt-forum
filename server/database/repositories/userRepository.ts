@@ -1,20 +1,18 @@
-import prisma from "@/server/database/client";
+import { User } from "@prisma/client";
+import prisma from "~/server/database/client";
 
-export async function getUserByEmail(email: string): Promise<IUser> {
-  return (await prisma.user.findUnique({
+export async function getUserByEmail(
+  emailOrEmail: string
+): Promise<User | null> {
+  return await prisma.user.findFirst({
     where: {
-      email: email,
+      OR: [{ email: emailOrEmail }, { username: emailOrEmail }],
     },
-    select: {
-      id: true,
-      username: true,
-      password: true, // Добавьте это
-    },
-  })) as IUser;
+  });
 }
 
-export async function getUserByUserName(username: string): Promise<IUser> {
-  return (await prisma.user.findUnique({
+export async function getUserByUserName(username: string) {
+  return await prisma.user.findUnique({
     where: {
       username: username,
     },
@@ -22,7 +20,7 @@ export async function getUserByUserName(username: string): Promise<IUser> {
       id: true,
       username: true,
     },
-  })) as IUser;
+  });
 }
 
 export async function createUser(data: IUser) {
@@ -39,8 +37,8 @@ export async function createUser(data: IUser) {
   return user;
 }
 
-export async function getUserById(id: number): Promise<IUser> {
-  return (await prisma.user.findUnique({
+export async function getUserById(id: number) {
+  return await prisma.user.findUnique({
     where: {
       id: id,
     },
@@ -50,7 +48,29 @@ export async function getUserById(id: number): Promise<IUser> {
       email: true,
       stripeCustomerId: true,
     },
-  })) as IUser;
+  });
+}
+
+export async function getUserByStripeCustomerId(stripeCustomerId: string) {
+  return await prisma.user.findFirst({
+    where: {
+      stripeCustomerId: stripeCustomerId,
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      stripeCustomerId: true,
+    },
+  });
+}
+
+export async function getSubscriptionById(stripeId: string) {
+  return await prisma.subscription.findFirst({
+    where: {
+      stripeId: stripeId,
+    },
+  });
 }
 
 export async function updateStripeCustomerId(data: IUser) {
@@ -62,37 +82,18 @@ export async function updateStripeCustomerId(data: IUser) {
   });
 }
 
-export async function getUserByStripeCustomerId(
-  stripeCustomerId: string
-): Promise<IUser> {
-  const user = await prisma.user.findFirst({
-    where: {
-      stripeCustomerId: stripeCustomerId,
-    },
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      stripeCustomerId: true,
-    },
-  });
-  if (user === null) {
-    throw new Error("User not found");
-  }
-  return user as IUser;
-}
-
-export async function getSubscriptionById(
-  stripeId: string
-): Promise<ISubscription> {
-  return (await prisma.subscription.findFirst({
-    where: {
-      stripeId: stripeId,
-    },
-  })) as ISubscription;
-}
-
 export async function createOrUpdateSubscription(data: ISubscription) {
+  if (
+    data.userId === null ||
+    data.quantity === null ||
+    data.trialEndsAt === null ||
+    data.endsAt === null ||
+    data.lastEventDate === null ||
+    data.startDate === null
+  ) {
+    throw Error("One or more required fields are null");
+  }
+
   return await prisma.subscription.upsert({
     where: {
       stripeId: data.stripeId,
@@ -106,7 +107,7 @@ export async function createOrUpdateSubscription(data: ISubscription) {
       trialEndsAt: data.trialEndsAt,
       endsAt: data.endsAt,
       lastEventDate: data.lastEventDate,
-      startDate: data.startDate || 0,
+      startDate: data.startDate,
     },
     update: {
       stripeStatus: data.stripeStatus,
@@ -115,7 +116,7 @@ export async function createOrUpdateSubscription(data: ISubscription) {
       trialEndsAt: data.trialEndsAt,
       endsAt: data.endsAt,
       lastEventDate: data.lastEventDate,
-      startDate: data.startDate || 0,
+      startDate: data.startDate,
     },
   });
 }

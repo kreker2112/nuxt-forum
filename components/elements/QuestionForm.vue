@@ -57,12 +57,17 @@ const data = props.data;
 const router = useRouter();
 
 async function postQuestion() {
-  const { data: question } = await useFetch<IQuestion>(
+  const { data: question, error } = await useFetch<IQuestion>(
     () => `${props.endpoint}`,
     { method: "post", body: { data }, pick: ["id"] }
   );
+  error.value
+    ? console.error("Ошибка при отправке вопроса:", error.value)
+    : null;
 
-  router.push(`/ask-jack/question/${question.value?.id}`);
+  question.value && question.value.id
+    ? router.push(`/ask-jack/question/${question.value.id}`)
+    : console.error("Не удалось получить ID вопроса");
 }
 </script>
 
