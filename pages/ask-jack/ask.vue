@@ -10,7 +10,7 @@
         <h1
           class="py-9 text-center text-5xl font-extrabold text-gray-900 dark:text-gray-400 ml-4"
         >
-          Ask Jack
+          Ask Me
         </h1>
       </div>
     </div>
